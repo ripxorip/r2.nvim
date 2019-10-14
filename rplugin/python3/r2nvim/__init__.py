@@ -5,7 +5,6 @@
 # ============================================================================
 
 import neovim
-import os
 
 from r2nvim.r2nvim import R2Nvim
 
@@ -14,6 +13,16 @@ class R2NvimWrapper(object):
     def __init__(self, nvim):
         self.nvim = nvim
         self.r2n = R2Nvim()
+
+    @neovim.command("R2NvimRax", range='', nargs='*', sync=True)
+    def R2NvimRax(self, args, range):
+        if len(args) == 0:
+            word = self.nvim.eval('expand(\'<cword>\')').strip('\n')
+        else:
+            word = args[0]
+        ret = self.r2n.rax(word)
+        retstr = ''+str(ret.split('\n'))
+        self.nvim.command(":call TestMe(%s)" % retstr)
 
     @neovim.command("R2NvimShowLog", range='', nargs='*', sync=True)
     def R2NvimShowLog(self, args, range):
